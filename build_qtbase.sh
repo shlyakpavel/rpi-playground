@@ -40,6 +40,20 @@ function fetch_rpi_firmware () {
         svn checkout -q https://github.com/raspberrypi/firmware/trunk/opt
     fi
     rsync -aqP /src/opt/ /sysroot/opt/
+
+    # There is a bug in QT's configure script that does not account
+    # for the /sysroot prefix, so we need to symlink the path on the host.
+    if [ ! -e "/opt/vc" ]; then
+        mkdir -p /opt
+        ln -s /sysroot/opt/vc /opt/
+    fi
+}
+
+function patch_qt (){
+    # QT is linking against the old libraries for Pi 1 - Pi 3
+    # https://bugreports.qt.io/browse/QTBUG-62216
+    sed -i 's/lEGL/lbrcmEGL/' "/src/qtbase/mkspecs/devices/$1/qmake.conf"
+    sed -i 's/lGLESv2/lbrcmGLESv2/' "/src/qtbase/mkspecs/devices/$1/qmake.conf"
 }
 
 function fetch_qt () {
@@ -118,14 +132,18 @@ function build_qtbase () {
             local BUILD_ARGS=(
                 "-device" "linux-rasp-pi-g++"
             )
+            patch_qt "linux-rasp-pi-g++"
         elif [ "$1" = "pi2" ]; then
             local BUILD_ARGS=(
                 "-device" "linux-rasp-pi2-g++"
             )
+            patch_qt "linux-rasp-pi2-g++"
         elif [ "$1" = "pi3" ]; then
             local BUILD_ARGS=(
                 "-device" "linux-rasp-pi3-g++"
+                "-v"
             )
+            patch_qt "linux-rasp-pi3-g++"
         elif [ "$1" = "pi4" ]; then
             local BUILD_ARGS=(
                 "-device" "linux-rasp-pi4-v3d-g++"
@@ -204,9 +222,19 @@ function build_qtbase () {
             cd /src/qtwebengine
             "$SRC_DIR/qt5pi/bin/qmake"
 
-            # Due to a bug, we can't specify a number of corse here.
+            # This make process can crap out, so let's add some handling here
+            set +e
+
+            # Due to a bug, we can't specify a number of cores here.
             # If we do, the build bcomes single threaded.
             make -j
+
+            if [$? != 0 ]; then
+                echo "QTWebEngine process crapped out. Retrying with one thread."
+                make -j1
+            fi
+            set -e
+
             make install
         fi
 
