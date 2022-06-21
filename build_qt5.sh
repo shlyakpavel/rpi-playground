@@ -295,6 +295,41 @@ function build_qtmqtt () {
     fi
 }
 
+function build_qtjsonserializer () {
+    local SRC_DIR="/src/$1"
+
+    if [ ! -f "$BUILD_TARGET/qtjsonserializer-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" ]; then
+        if [ "${BUILD_QTJSONSERLIALIZER-x}" == "1" ]; then
+            if [ ! -d "$SRC_DIR/qtjsonserializer" ] ; then
+                git clone --depth=1 https://github.com/Skycoder42/QtJsonSerializer.git -b 3.2.0-2 "$SRC_DIR/qtjsonserializer"
+            else
+                pushd "$SRC_DIR/qtjsonserializer"
+                git reset --hard "3.2.0-2"
+                popd
+            fi
+
+            pushd "$SRC_DIR/qtjsonserializer"
+            mkdir -p fakeroot
+            "$SRC_DIR/qt5pi/bin/qmake"
+            make qmake_all -j"$MAKE_CORES"
+            make -j"$MAKE_CORES"
+            make
+            make install
+            INSTALL_ROOT="$SRC_DIR/qtjsonserializer/fakeroot/" make install
+
+            pushd fakeroot
+            tar cfz "$BUILD_TARGET/qtjsonserializer-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" .
+            popd
+
+            pushd "$BUILD_TARGET"
+            sha256sum "qtjsonserializer-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" > "qtjsonserializer-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz.sha256"
+            popd
+        fi
+    else
+        echo "qtjsonserializer Build already exist."
+    fi
+}
+
 # Modify paths for build process
 /usr/local/bin/sysroot-relativelinks.py /sysroot
 
@@ -306,8 +341,10 @@ if [ ! "${TARGET-}" ]; then
     for device in pi4 pi3 pi2 pi1; do
         build_qt "$device"
         build_qtmqtt "$device"
+        build_qtjsonserializer "$device"
     done
 else
     build_qt "$TARGET"
     build_qtmqtt "$TARGET"
+    build_qtjsonserializer "$TARGET"
 fi
