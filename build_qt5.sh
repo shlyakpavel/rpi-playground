@@ -196,14 +196,10 @@ function build_qt () {
             -skip qtmacextras \
             -skip qtpurchasing \
             -skip qtquick3d \
-            -skip qtquickcontrols \
-            -skip qtquickcontrols2 \
             -skip qtquicktimeline \
             -skip qtscript \
             -skip qtscxml \
             -skip qtsensors \
-            -skip qtserialbus \
-            -skip qtserialport \
             -skip qtspeech \
             -skip qttools \
             -skip qttranslations \
@@ -281,4 +277,3 @@ if [ ! "${TARGET-}" ]; then
 else
     build_qt "$TARGET"
 fi
-

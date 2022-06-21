@@ -184,8 +184,11 @@ COPY --from=builder /usr/include/ /sysroot/usr/include/
 COPY --from=builder /usr/lib/ /sysroot/usr/lib/
 COPY --from=builder /opt/vc/ sysroot/opt/vc/
 
-ENV BUILD_WEBVIEW 1
-ENV CCACHE_MAXSIZE 10G
+ENV BUILD_WEBVIEW 0
+ENV TARGET pi3
+ENV CLEAN_BUILD 1
+
+ENV CCACHE_MAXSIZE 15G
 ENV CCACHE_DIR /src/ccache
 ARG GIT_HASH=0
 ENV GIT_HASH=$GIT_HASH
