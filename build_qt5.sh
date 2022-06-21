@@ -274,9 +274,9 @@ function build_qtmqtt () {
 
             pushd "$SRC_DIR/qtmqtt"
             mkdir -p fakeroot
-            "$SRC_DIR/qt5pi/bin/qmake" PREFIX="$SRC_DIR/qtmqtt/fakeroot"
+            "$SRC_DIR/qt5pi/bin/qmake"
             make -j"$MAKE_CORES"
-            make install
+            INSTALL_ROOT="$SRC_DIR/qtmqtt/fakeroot/" make install
 
             pushd fakeroot
             tar cfz "$BUILD_TARGET/qtmqtt-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" .
