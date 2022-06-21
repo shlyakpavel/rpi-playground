@@ -3,7 +3,6 @@
 Since our entire build environment resides inside a Docker container, you don't need to install any packages on the host system. Everything is confined to the Docker image. Do however note that as of this writing, the multi-platform support is still in beta so, you need to enable this. Instructions for how to get started with multi-platform builds can be found [here](https://medium.com/@artur.klauser/building-multi-architecture-docker-images-with-buildx-27d80f7e2408).
 
 ```
-$ cd webview
 $ docker build \
     --build-arg GIT_HASH=$(git rev-parse --short HEAD) \
     -t qt-builder .
@@ -13,8 +12,8 @@ You should now be able to invoke a run executing the following command:
 
 ```
 $ docker run --rm -t \
-    -v ~/tmp/qt-src:/src \
-    -v ~/tmp/qt-build:/build \
+    -v ~/tmp/qt-src:/src:Z \
+    -v ~/tmp/qt-build:/build:Z \
     -v $(pwd):/webview:ro \
     qt-builder
 ```
