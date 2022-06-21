@@ -310,11 +310,14 @@ function build_qtjsonserializer () {
 
             pushd "$SRC_DIR/qtjsonserializer"
             mkdir -p fakeroot
+
+	    sed -i '/doxygen/d' qtjsonserializer.pro
+	    sed -i '/runtests/d' qtjsonserializer.pro
+ 	    sed -i '/doc/d' qtjsonserializer.pro
             "$SRC_DIR/qt5pi/bin/qmake"
             make qmake_all -j"$MAKE_CORES"
             make -j"$MAKE_CORES"
             make
-            make install
             INSTALL_ROOT="$SRC_DIR/qtjsonserializer/fakeroot/" make install
 
             pushd fakeroot
