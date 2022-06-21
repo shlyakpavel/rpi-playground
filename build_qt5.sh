@@ -270,6 +270,10 @@ function build_qtmqtt () {
         if [ "${BUILD_MQTT-x}" == "1" ]; then
             if [ ! -d "$SRC_DIR/qtmqtt" ] ; then
                 git clone --depth=1 "git://code.qt.io/qt/qtmqtt.git" -b "5.15.2" "$SRC_DIR/qtmqtt"
+            else
+                pushd "$SRC_DIR/qtmqtt"
+                git reset --hard "5.15.2"
+                popd
             fi
 
             pushd "$SRC_DIR/qtmqtt"
