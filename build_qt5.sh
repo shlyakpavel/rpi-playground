@@ -263,6 +263,34 @@ function build_qt () {
     fi
 }
 
+function build_qtmqtt () {
+    local SRC_DIR="/src/$1"
+
+    if [ ! -f "$BUILD_TARGET/qtmqtt-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" ]; then
+        if [ "${BUILD_MQTT-x}" == "1" ]; then
+            if [ ! -d "$SRC_DIR/qtmqtt" ] ; then
+                git clone --depth=1 "git://code.qt.io/qt/qtmqtt.git" -b "5.15.2" "$SRC_DIR/qtmqtt"
+            fi
+
+            pushd "$SRC_DIR/qtmqtt"
+            mkdir -p fakeroot
+            "$SRC_DIR/qt5pi/bin/qmake" PREFIX="$SRC_DIR/qtmqtt/fakeroot"
+            make -j"$MAKE_CORES"
+            make install
+
+            pushd fakeroot
+            tar cfz "$BUILD_TARGET/qtmqtt-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" .
+            popd
+
+            pushd "$BUILD_TARGET"
+            sha256sum "qtmqtt-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" > "qtmqtt-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz.sha256"
+            popd
+        fi
+    else
+        echo "qtmqtt Build already exist."
+    fi
+}
+
 # Modify paths for build process
 /usr/local/bin/sysroot-relativelinks.py /sysroot
 
@@ -273,7 +301,9 @@ if [ ! "${TARGET-}" ]; then
     # Let's work our way through all Pis in order of relevance
     for device in pi4 pi3 pi2 pi1; do
         build_qt "$device"
+        build_qtmqtt "$device"
     done
 else
     build_qt "$TARGET"
+    build_qtmqtt "$TARGET"
 fi

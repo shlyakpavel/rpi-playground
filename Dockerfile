@@ -185,6 +185,7 @@ COPY --from=builder /usr/lib/ /sysroot/usr/lib/
 COPY --from=builder /opt/vc/ sysroot/opt/vc/
 
 ENV BUILD_WEBVIEW 0
+ENV BUILD_MQTT 1
 ENV TARGET pi3
 ENV CLEAN_BUILD 1
 
