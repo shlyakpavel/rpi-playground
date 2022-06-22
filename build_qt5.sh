@@ -198,7 +198,6 @@ function build_qt () {
             -skip qtquick3d \
             -skip qtquicktimeline \
             -skip qtscript \
-            -skip qtscxml \
             -skip qtsensors \
             -skip qtspeech \
             -skip qttools \
