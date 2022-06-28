@@ -323,6 +323,17 @@ function build_qtjsonserializer () {
     fi
 }
 
+function export_sysroot () {
+    if [ ! -f "$BUILD_TARGET/sysroot-$DEBIAN_VERSION.tar.gz" ]; then
+        echo "exporting sysroot"
+        pushd /sysroot
+        tar cfz "$BUILD_TARGET/sysroot-$DEBIAN_VERSION.tar.gz" .
+        popd
+    else
+        echo "sysroot is already exported."
+    fi
+}
+
 # Modify paths for build process
 /usr/local/bin/sysroot-relativelinks.py /sysroot
 
@@ -341,3 +352,5 @@ else
     build_qtmqtt "$TARGET"
     build_qtjsonserializer "$TARGET"
 fi
+
+export_sysroot
