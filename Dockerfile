@@ -95,7 +95,8 @@ RUN apt-get update && \
         nodejs \
         ruby \
         va-driver-all \
-        wget
+        wget \
+        xorg-dev
 
 # Really make sure we don't have this package installed
 # as it will break the build of QTWebEngine
