@@ -173,8 +173,6 @@ function build_qt () {
             -no-gtk \
             -no-pch \
             -no-use-gold-linker \
-            -no-xcb \
-            -no-xcb-xlib \
             -nomake examples \
             -nomake tests \
             -opensource \
@@ -189,7 +187,6 @@ function build_qt () {
             -skip qtcanvas3d \
             -skip qtdatavis3d \
             -skip qtgamepad \
-            -skip qtgraphicaleffects \
             -skip qtlocation \
             -skip qtlottie \
             -skip qtmacextras \
