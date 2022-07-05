@@ -225,32 +225,6 @@ function build_qt () {
     else
         echo "QT Build already exist."
     fi
-
-    if [ ! -f "$BUILD_TARGET/webview-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" ]; then
-        if [ "${BUILD_WEBVIEW-x}" == "1" ]; then
-            cp -rf /webview "$SRC_DIR/"
-
-            pushd "$SRC_DIR/webview"
-
-            "$SRC_DIR/qt5pi/bin/qmake"
-            make -j"$MAKE_CORES"
-            make install
-
-            mkdir -p fakeroot/bin fakeroot/share/ScreenlyWebview
-            mv ScreenlyWebview fakeroot/bin/
-            cp -rf /webview/res fakeroot/share/ScreenlyWebview/
-
-            pushd fakeroot
-            tar cfz "$BUILD_TARGET/webview-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" .
-            popd
-
-            pushd "$BUILD_TARGET"
-            sha256sum "webview-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" > "webview-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz.sha256"
-            popd
-        fi
-    else
-        echo "Webview Build already exist."
-    fi
 }
 
 function build_qtmqtt () {

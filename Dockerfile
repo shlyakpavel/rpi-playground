@@ -185,7 +185,6 @@ COPY --from=builder /usr/include/ /sysroot/usr/include/
 COPY --from=builder /usr/lib/ /sysroot/usr/lib/
 COPY --from=builder /opt/vc/ sysroot/opt/vc/
 
-ENV BUILD_WEBVIEW 0
 ENV BUILD_MQTT 1
 ENV BUILD_QTJSONSERLIALIZER 1
 ENV TARGET pi3
