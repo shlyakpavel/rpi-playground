@@ -178,6 +178,8 @@ function build_qt () {
             -opensource \
             -prefix /usr/local/qt5pi \
             -qpa eglfs \
+            -qpa xcb \
+            -xcb \
             -qt-pcre \
             -reduce-exports \
             -release \
@@ -205,7 +207,7 @@ function build_qt () {
             -system-libpng \
             -system-zlib \
             -sysroot /sysroot
-
+exit 0
         # The RAM consumption is proportional to the amount of cores.
         # On an 8 core box, the build process will require ~16GB of RAM.
         make -j"$MAKE_CORES"

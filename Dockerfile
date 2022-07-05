@@ -63,6 +63,10 @@ RUN apt-get update && \
         libwayland-dev \
         libwebp-dev \
         libx11-dev \
+	libxau-dev \
+	libxcursor-dev \
+	x11proto-dev \
+	libxcomposite-dev \
         libx11-xcb-dev \
         libx11-xcb1 \
         libxcb-glx0-dev \
@@ -85,9 +89,13 @@ RUN apt-get update && \
         libxcb-xinerama0-dev \
         libxcb1 \
         libxcb1-dev \
+	libxcb-xinput-dev \
+	libxcb-util0-dev \
         libxext-dev \
         libxi-dev \
-        libxkbcommon-dev \
+	libxfixes-dev \        
+	libxkbcommon-dev \
+	libxkbcommon-x11-dev \
         libxrender-dev \
         libxslt1-dev \
         libxss-dev \
@@ -170,7 +178,8 @@ RUN apt-get update && \
         ruby \
         subversion \
         wget \
-        make && \
+        make \
+	libxkbcommon-x11-dev && \
     apt-get clean
 
 WORKDIR /build
