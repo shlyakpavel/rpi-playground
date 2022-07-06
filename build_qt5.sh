@@ -161,7 +161,8 @@ function build_qt () {
             -confirm-license \
             -dbus-linked \
             -device-option CROSS_COMPILE=/src/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf- \
-            -eglfs \
+            -no-eglfs \
+            -no-linuxfb \
             -evdev \
             -extprefix "$SRC_DIR/qt5pi" \
             -force-pkg-config \
@@ -177,7 +178,6 @@ function build_qt () {
             -nomake tests \
             -opensource \
             -prefix /usr/local/qt5pi \
-            -qpa eglfs \
             -qpa xcb \
             -xcb \
             -qt-pcre \
@@ -201,13 +201,14 @@ function build_qt () {
             -skip qtwinextras \
             -skip qtx11extras \
             -skip wayland \
+            -skip webengine \
             -ssl \
             -system-freetype \
             -system-libjpeg \
             -system-libpng \
             -system-zlib \
+            -no-feature-accessibility \
             -sysroot /sysroot
-exit 0
         # The RAM consumption is proportional to the amount of cores.
         # On an 8 core box, the build process will require ~16GB of RAM.
         make -j"$MAKE_CORES"
