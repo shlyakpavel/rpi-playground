@@ -235,6 +235,9 @@ function build_module () {
     local MODULE="$2"
     if [ ! -f "$BUILD_TARGET/$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" ]; then
         if [ "${BUILD_MQTT-x}" == "1" ]; then
+            # Temporary hack to download module each time
+            rm -rf "$SRC_DIR/$MODULE"
+
             if [ ! -d "$SRC_DIR/$MODULE" ] ; then
                 git clone --depth=1 "git://code.qt.io/qt/$MODULE.git" -b "5.15.2" "$SRC_DIR/$MODULE"
             else
