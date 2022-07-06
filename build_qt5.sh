@@ -195,7 +195,6 @@ function build_qt () {
             -skip qtpurchasing \
             -skip qtsensors \
             -skip qtspeech \
-            -skip qtvirtualkeyboard \
             -skip qtwayland \
             -skip qtwebview \
             -skip qtwinextras \
@@ -208,6 +207,7 @@ function build_qt () {
             -system-libpng \
             -system-zlib \
             -no-feature-accessibility \
+            -feature-dialog \
             -sysroot /sysroot
         # The RAM consumption is proportional to the amount of cores.
         # On an 8 core box, the build process will require ~16GB of RAM.
