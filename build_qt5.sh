@@ -206,7 +206,6 @@ function build_qt () {
             -system-libjpeg \
             -system-libpng \
             -system-zlib \
-            -no-feature-accessibility \
             -feature-dialog \
             -sysroot /sysroot
         # The RAM consumption is proportional to the amount of cores.
