@@ -23,9 +23,9 @@ function fetch_cross_compile_tool () {
     # * https://www.linaro.org/downloads/#gnu_and_llvm
     if [ ! -d "gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz" ]; then
         pushd /src/
-        wget -q "https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf.tar.xz"
-        tar xf gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf.tar.xz
-        rm gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf.tar.xz
+        wget -q "https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz"
+        tar xf gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz
+        rm gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz
         popd
     fi
 }
@@ -157,7 +157,7 @@ function build_qt () {
             -ccache \
             -confirm-license \
             -dbus-linked \
-            -device-option CROSS_COMPILE=/src/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf- \
+            -device-option CROSS_COMPILE=/src/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf- \
             -no-eglfs \
             -no-linuxfb \
             -evdev \
