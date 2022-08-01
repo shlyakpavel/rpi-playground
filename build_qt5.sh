@@ -72,6 +72,7 @@ function patch_qt () {
 function patch_qtwebengine () {
     # Patch up WebEngine due to GCC bug
     # https://www.enricozini.org/blog/2020/qt5/build-qt5-cross-builder-with-raspbian-sysroot-compiling-with-the-sysroot/
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=96206
     pushd "/src/qt5/qtwebengine"
     sed -i '1s/^/#pragma GCC push_options\n#pragma GCC optimize ("O0")\n/' src/3rdparty/chromium/third_party/skia/third_party/skcms/skcms.cc
     echo "#pragma GCC pop_options" >> src/3rdparty/chromium/third_party/skia/third_party/skcms/skcms.cc
