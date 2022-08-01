@@ -100,7 +100,6 @@ RUN apt-get update && \
         libxslt1-dev \
         libxss-dev \
         libxtst-dev \
-        nodejs \
         ruby \
         va-driver-all \
         wget \
@@ -170,7 +169,6 @@ RUN apt-get update && \
         libxtst-dev \
         lsb-release \
         ninja-build \
-        nodejs \
         python \
         rsync \
         ruby \
