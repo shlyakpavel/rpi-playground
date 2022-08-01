@@ -15,20 +15,17 @@ mkdir -p "$BUILD_TARGET"
 mkdir -p "$SRC"
 
 /usr/games/cowsay -f tux "Building QT version $QT_BRANCH."
-if [ "${BUILD_WEBENGINE-x}" == "1" ]; then
-    /usr/games/cowsay -f tux "...with QTWebEngine."
-fi
 
 function fetch_cross_compile_tool () {
     # The Raspberry Pi Foundation's cross compiling tools are too old so we need newer ones.
     # References:
     # * https://github.com/UvinduW/Cross-Compiling-Qt-for-Raspberry-Pi-4
-    # * https://releases.linaro.org/components/toolchain/binaries/latest-7/armv8l-linux-gnueabihf/
-    if [ ! -d "/src/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf" ]; then
+    # * https://www.linaro.org/downloads/#gnu_and_llvm
+    if [ ! -d "gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz" ]; then
         pushd /src/
-        wget -q https://releases.linaro.org/components/toolchain/binaries/7.4-2019.02/arm-linux-gnueabihf/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf.tar.xz
-        tar xf gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf.tar.xz
-        rm gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf.tar.xz
+        wget -q "https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz"
+        tar xf gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz
+        rm gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz
         popd
     fi
 }
@@ -160,7 +157,7 @@ function build_qt () {
             -ccache \
             -confirm-license \
             -dbus-linked \
-            -device-option CROSS_COMPILE=/src/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf- \
+            -device-option CROSS_COMPILE=gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf- \
             -no-eglfs \
             -no-linuxfb \
             -evdev \
