@@ -123,8 +123,6 @@ RUN apt-get update && \
         flex \
         freetds-dev \
         g++ \
-        g++-multilib \
-        gcc-multilib \
         git \
         gperf \
         gyp \
@@ -179,7 +177,11 @@ RUN apt-get update && \
         subversion \
         wget \
         make \
-	libxkbcommon-x11-dev && \
+	libxkbcommon-x11-dev \
+        g++-arm-linux-gnueabihf \
+        gcc-arm-linux-gnueabihf \
+        gcc-8-arm-linux-gnueabihf \
+        g++-8-arm-linux-gnueabihf && \
     apt-get clean
 
 WORKDIR /build

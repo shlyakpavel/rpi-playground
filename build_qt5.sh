@@ -158,7 +158,7 @@ function build_qt () {
             -ccache \
             -confirm-license \
             -dbus-linked \
-            -device-option CROSS_COMPILE=/src/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf- \
+            -device-option CROSS_COMPILE=/usr/bin/arm-linux-gnueabihf- \
             -no-eglfs \
             -no-linuxfb \
             -evdev \
@@ -311,7 +311,7 @@ function export_sysroot () {
 # Modify paths for build process
 /usr/local/bin/sysroot-relativelinks.py /sysroot
 
-fetch_cross_compile_tool
+#fetch_cross_compile_tool
 fetch_rpi_firmware
 
 if [ ! "${TARGET-}" ]; then
