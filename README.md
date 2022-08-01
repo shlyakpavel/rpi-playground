@@ -27,28 +27,7 @@ You can learn more about this process in our [Compiling Qt with Docker multi-sta
 You can append the following environment variables to configure the build process:
 
 * `CLEAN_BUILD`: Set to `1` to ensure a clean build (not including the `ccache` cache).
-* `BUILD_WEBVIEW`:  Set to `0` to disable the build of ScreenlyWebView.
 * `TARGET`: Specify a particular target (such as `pi3` or `pi4`) instead of all existing boards.
-
-## Usage
-
-DBus is used for communication.
-Webview registers `screenly.webview` object at `/Screenly` address on the session bus.
-
-Webview provides 2 methods:`loadPage` and `loadImage`.
-
-Example of interaction (python):
-
-```
-from pydbus import SessionBus
-
-bus = SessionBus()
-browser_bus = bus.get('screenly.webview', '/Screenly')
-
-browser_bus.loadPage("www.example.com")
-```
-
-Supported protocols: `http://`, `https://`
 
 ## Debugging
 
