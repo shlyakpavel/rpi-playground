@@ -221,11 +221,11 @@ function build_module () {
     if [ ! -f "$BUILD_TARGET/$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" ]; then
         if [ "${BUILD_MQTT-x}" == "1" ]; then
             pushd "$SRC_DIR"
-            if [ ! -f "$MODULE-everywhere-opensource-src-$QT_BRANCH.zip" ]; then
-                wget "https://download.qt.io/archive/qt/5.15/5.15.5/submodules/$MODULE-everywhere-opensource-src-5.15.5.xz"
-                tar xf "$MODULE-everywhere-opensource-src-5.15.5.xz"
+            if [ ! -f "$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz" ]; then
+                wget "https://download.qt.io/archive/qt/5.15/$QT_BRANCH/submodules/$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz"
+                tar xf "$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz"
             fi
-            rsync -aqP --delete "$MODULE-everywhere-opensource-src-5.15.5/" "$MODULE"
+            rsync -aqP --delete "$MODULE-everywhere-opensource-src-$QT_BRANCH/" "$MODULE"
             popd
 
             pushd "$SRC_DIR/$MODULE"
