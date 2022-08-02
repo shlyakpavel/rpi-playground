@@ -16,20 +16,6 @@ mkdir -p "$SRC"
 
 /usr/games/cowsay -f tux "Building QT version $QT_BRANCH."
 
-function fetch_cross_compile_tool () {
-    # The Raspberry Pi Foundation's cross compiling tools are too old so we need newer ones.
-    # References:
-    # * https://github.com/UvinduW/Cross-Compiling-Qt-for-Raspberry-Pi-4
-    # * https://www.linaro.org/downloads/#gnu_and_llvm
-    if [ ! -d "gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz" ]; then
-        pushd /src/
-        wget -q "https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz"
-        tar xf gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz
-        rm gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz
-        popd
-    fi
-}
-
 function fetch_rpi_firmware () {
     if [ ! -d "/src/opt" ]; then
         pushd /src
@@ -311,7 +297,6 @@ function export_sysroot () {
 # Modify paths for build process
 /usr/local/bin/sysroot-relativelinks.py /sysroot
 
-#fetch_cross_compile_tool
 fetch_rpi_firmware
 
 if [ ! "${TARGET-}" ]; then
