@@ -7,7 +7,9 @@ set -exuo pipefail
 
 BUILD_TARGET=/build
 SRC=/src
-QT_BRANCH="5.15.2"
+QT_BRANCH="5.15.5"
+QT_URL='https://download.qt.io/archive/qt/5.15/5.15.5/single/qt-everywhere-opensource-src-5.15.5.tar.xz'
+QT_HASH='https://download.qt.io/archive/qt/5.15/5.15.5/single/md5sums.txt'
 DEBIAN_VERSION=$(lsb_release -cs)
 MAKE_CORES="$(expr $(nproc) + 2)"
 
@@ -71,20 +73,20 @@ function fetch_qt5 () {
 
     if [ ! -d "$SRC_DIR" ]; then
 
-        if [ ! -f "qt-everywhere-src-5.15.2.tar.xz" ]; then
-            wget https://download.qt.io/archive/qt/5.15/5.15.2/single/qt-everywhere-src-5.15.2.tar.xz
+        if [ ! -f "qt-everywhere-opensource-src-$QT_BRANCH.tar.xz" ]; then
+            wget "$QT_URL"
         fi
 
         if [ ! -f "md5sums.txt" ]; then
-            wget https://download.qt.io/archive/qt/5.15/5.15.2/single/md5sums.txt
+            wget "$QT_HASH"
         fi
         md5sum --ignore-missing -c md5sums.txt
 
         # Extract and make a clone
-        tar xf qt-everywhere-src-5.15.2.tar.xz
-        rsync -aqP qt-everywhere-src-5.15.2/ qt5
+        tar xf "qt-everywhere-opensource-src-$QT_BRANCH.tar.xz"
+        rsync -aqP "qt-everywhere-opensource-src-$QT_BRANCH/" qt5
     else
-        rsync -aqP --delete qt-everywhere-src-5.15.2/ qt5
+        rsync -aqP --delete "qt-everywhere-opensource-src-$QT_BRANCH/" qt5
     fi
     popd
 }
@@ -218,13 +220,13 @@ function build_module () {
     local MODULE="$2"
     if [ ! -f "$BUILD_TARGET/$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" ]; then
         if [ "${BUILD_MQTT-x}" == "1" ]; then
-            if [ ! -d "$SRC_DIR/$MODULE" ] ; then
-                git clone --depth=1 "git://code.qt.io/qt/$MODULE.git" -b "5.15.2" "$SRC_DIR/$MODULE"
-            else
-                pushd "$SRC_DIR/$MODULE"
-                git reset --hard "5.15.2"
-                popd
+            pushd "$SRC_DIR"
+            if [ ! -f "$MODULE-everywhere-opensource-src-$QT_BRANCH.zip" ]; then
+                wget "https://download.qt.io/archive/qt/5.15/5.15.5/submodules/$MODULE-everywhere-opensource-src-5.15.5.zip"
+                tar xf "$MODULE-everywhere-opensource-src-5.15.5.zip"
             fi
+            rsync -aqP --delete "$MODULE-everywhere-opensource-src-5.15.5/" "$MODULE"
+            popd
 
             pushd "$SRC_DIR/$MODULE"
             mkdir -p fakeroot
@@ -304,13 +306,11 @@ if [ ! "${TARGET-}" ]; then
     for device in pi4 pi3 pi2 pi1; do
         build_qt "$device"
         build_module "$device" "qtmqtt"
-#        build_module "$device" "qtquickcontrols"
         build_qtjsonserializer "$device"
     done
 else
     build_qt "$TARGET"
     build_module "$TARGET" "qtmqtt"
-#    build_module "$TARGET" "qtquickcontrols"
     build_qtjsonserializer "$TARGET"
 fi
 
