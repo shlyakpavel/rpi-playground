@@ -219,29 +219,29 @@ function build_module () {
     local SRC_DIR="/src/$1"
     local MODULE="$2"
     if [ ! -f "$BUILD_TARGET/$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" ]; then
-        if [ "${BUILD_MQTT-x}" == "1" ]; then
-            pushd "$SRC_DIR"
-            if [ ! -f "$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz" ]; then
-                wget "https://download.qt.io/archive/qt/5.15/$QT_BRANCH/submodules/$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz"
-                tar xf "$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz"
+        pushd "$SRC_DIR"
+        if [ ! -d "$MODULE-everywhere-opensource-src-$QT_BRANCH" ]; then
+            if [ ! -f "../$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz" ]; then
+                wget "https://download.qt.io/archive/qt/5.15/$QT_BRANCH/submodules/$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz" -P ".."
             fi
-            rsync -aqP --delete "$MODULE-everywhere-opensource-src-$QT_BRANCH/" "$MODULE"
-            popd
-
-            pushd "$SRC_DIR/$MODULE"
-            mkdir -p fakeroot
-            "$SRC_DIR/qt5pi/bin/qmake"
-            make -j"$MAKE_CORES"
-            INSTALL_ROOT="$SRC_DIR/$MODULE/fakeroot/" make install
-
-            pushd fakeroot
-            tar cfz "$BUILD_TARGET/$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" .
-            popd
-
-            pushd "$BUILD_TARGET"
-            sha256sum "$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" > "$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz.sha256"
-            popd
+            tar xf "../$MODULE-everywhere-opensource-src-$QT_BRANCH.tar.xz"
         fi
+        rsync -aqP --delete "$MODULE-everywhere-src-$QT_BRANCH/" "$MODULE"
+        popd
+
+        pushd "$SRC_DIR/$MODULE"
+        mkdir -p fakeroot
+        "$SRC_DIR/qt5pi/bin/qmake"
+        make -j"$MAKE_CORES"
+        INSTALL_ROOT="$SRC_DIR/$MODULE/fakeroot/" make install
+
+        pushd fakeroot
+        tar cfz "$BUILD_TARGET/$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" .
+        popd
+
+        pushd "$BUILD_TARGET"
+        sha256sum "$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz" > "$MODULE-$QT_BRANCH-$DEBIAN_VERSION-$1-$GIT_HASH.tar.gz.sha256"
+        popd
     else
         echo "$MODULE Build already exist."
     fi
@@ -305,12 +305,16 @@ if [ ! "${TARGET-}" ]; then
     # Let's work our way through all Pis in order of relevance
     for device in pi4 pi3 pi2 pi1; do
         build_qt "$device"
-        build_module "$device" "qtmqtt"
+        if [ "${BUILD_MQTT-x}" == "1" ]; then
+            build_module "$device" "qtmqtt"
+        fi
         build_qtjsonserializer "$device"
     done
 else
     build_qt "$TARGET"
-    build_module "$TARGET" "qtmqtt"
+    if [ "${BUILD_MQTT-x}" == "1" ]; then
+        build_module "$TARGET" "qtmqtt"
+    fi
     build_qtjsonserializer "$TARGET"
 fi
 
