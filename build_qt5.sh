@@ -84,9 +84,9 @@ function fetch_qt5 () {
 
         # Extract and make a clone
         tar xf "qt-everywhere-opensource-src-$QT_BRANCH.tar.xz"
-        rsync -aqP "qt-everywhere-opensource-src-$QT_BRANCH/" qt5
+        rsync -aqP "qt-everywhere-src-$QT_BRANCH/" qt5
     else
-        rsync -aqP --delete "qt-everywhere-opensource-src-$QT_BRANCH/" qt5
+        rsync -aqP --delete "qt-everywhere-src-$QT_BRANCH/" qt5
     fi
     popd
 }
