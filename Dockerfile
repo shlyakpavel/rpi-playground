@@ -1,4 +1,4 @@
-FROM --platform=linux/arm/v7 balenalib/rpi-raspbian:buster as builder
+FROM --platform=linux/arm/v7 arm32v7/debian:buster as builder
 
 # There are likely a large number of dependencies that can be stripped out here
 # depending on your needs (and probably in general). My primary objective was just
@@ -100,11 +100,6 @@ RUN apt-get update && \
         wget \
         xorg-dev
 
-# Really make sure we don't have this package installed
-# as it will break the build of QTWebEngine
-# https://www.enricozini.org/blog/2020/qt5/build-qt5-cross-builder-with-raspbian-sysroot-compiling-with-the-sysroot-continued/
-RUN dpkg --purge libraspberrypi-dev
-
 FROM debian:buster
 
 # This list can most likely be slimmed down *a lot* but that's for another day.
@@ -187,7 +182,6 @@ RUN mkdir -p /sysroot/usr /sysroot/opt /sysroot/lib
 COPY --from=builder /lib/ /sysroot/lib/
 COPY --from=builder /usr/include/ /sysroot/usr/include/
 COPY --from=builder /usr/lib/ /sysroot/usr/lib/
-COPY --from=builder /opt/vc/ sysroot/opt/vc/
 
 ENV BUILD_MQTT 1
 ENV BUILD_QTJSONSERLIALIZER 1
