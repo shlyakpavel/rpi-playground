@@ -41,20 +41,37 @@ function fetch_rpi_firmware () {
 }
 
 function patch_qt () {
-    # Yes, yes, this all should be converted to proper patches
-    # but I really just wanted to get it to work.
+    local QMAKE_CONF="/src/qt5/qtbase/mkspecs/devices/$1/qmake.conf"
+    if [ "$1" != "linux-arm-generic-g++" ]; then
+        # Yes, yes, this all should be converted to proper patches
+        # but I really just wanted to get it to work.
 
-    # QT is linking against the old libraries for Pi 1 - Pi 3
-    # https://bugreports.qt.io/browse/QTBUG-62216
-    sed -i 's/lEGL/lbrcmEGL/' "/src/qt5/qtbase/mkspecs/devices/$1/qmake.conf"
-    sed -i 's/lGLESv2/lbrcmGLESv2/' "/src/qt5/qtbase/mkspecs/devices/$1/qmake.conf"
+        # QT is linking against the old libraries for Pi 1 - Pi 3
+        # https://bugreports.qt.io/browse/QTBUG-62216
+        sed -i 's/lEGL/lbrcmEGL/' "$QMAKE_CONF"
+        sed -i 's/lGLESv2/lbrcmGLESv2/' "$QMAKE_CONF"
 
-    # Qmake won't account for sysroot
-    # https://wiki.qt.io/RaspberryPi2EGLFS
-    sed -i 's#^VC_LIBRARY_PATH.*#VC_LIBRARY_PATH = $$[QT_SYSROOT]/opt/vc/lib#' "/src/qt5/qtbase/mkspecs/devices/$1/qmake.conf"
-    sed -i 's#^VC_INCLUDE_PATH.*#VC_INCLUDE_PATH = $$[QT_SYSROOT]/opt/vc/include#' "/src/qt5/qtbase/mkspecs/devices/$1/qmake.conf"
-    sed -i 's#^VC_LINK_LINE.*#VC_LINK_LINE = -L$${VC_LIBRARY_PATH}#' "/src/qt5/qtbase/mkspecs/devices/$1/qmake.conf"
-    sed -i 's#^QMAKE_LIBDIR_OPENGL_ES2.*#QMAKE_LIBDIR_OPENGL_ES2 = $${VC_LIBRARY_PATH}#' "/src/qt5/qtbase/mkspecs/devices/$1/qmake.conf"
+        # Qmake won't account for sysroot
+        # https://wiki.qt.io/RaspberryPi2EGLFS
+        sed -i 's#^VC_LIBRARY_PATH.*#VC_LIBRARY_PATH = $$[QT_SYSROOT]/opt/vc/lib#' "$QMAKE_CONF"
+        sed -i 's#^VC_INCLUDE_PATH.*#VC_INCLUDE_PATH = $$[QT_SYSROOT]/opt/vc/include#' "$QMAKE_CONF"
+        sed -i 's#^VC_LINK_LINE.*#VC_LINK_LINE = -L$${VC_LIBRARY_PATH}#' "$QMAKE_CONF"
+        sed -i 's#^QMAKE_LIBDIR_OPENGL_ES2.*#QMAKE_LIBDIR_OPENGL_ES2 = $${VC_LIBRARY_PATH}#' "$QMAKE_CONF"
+    else
+        patch -d "/src/qt5/qtbase/" -p0 <<'EOF'
+--- mkspecs/devices/linux-arm-generic-g++/qmake.conf	2022-08-03 13:48:47.074865145 +0300
++++ mkspecs/devices/linux-arm-generic-g++/qmake.conf	2022-08-03 13:49:12.234373968 +0300
+@@ -5,5 +5,8 @@
+ # ./configure -device arm-generic-g++ -device-option CROSS_COMPILE=arm-linux-gnueabi-
+
+ include(../common/linux_device_pre.conf)
++DISTRO_OPTS            += hard-float
++DISTRO_OPTS            += deb-multi-arch
++QMAKE_CFLAGS            = -march=armv8-a -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8
+ include(../common/linux_arm_device_post.conf)
+ load(qt_config)
+EOF
+    fi
 }
 
 function patch_qtwebengine () {
@@ -138,6 +155,7 @@ function build_qt () {
             local BUILD_ARGS=(
                 "-device" "linux-arm-generic-g++"
             )
+            patch_qt "linux-arm-generic-g++"
         else
             echo "Unknown device. Exiting."
             exit 1
