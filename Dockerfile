@@ -7,7 +7,6 @@ RUN apt-get update && \
     apt-get install -y \
         firebird-dev \
         freetds-dev \
-        gstreamer-tools \
         gstreamer1.0-plugins-base \
         gstreamer1.0-plugins-good \
         gstreamer1.0-plugins-ugly \
@@ -29,7 +28,6 @@ RUN apt-get update && \
         libgcrypt20-dev \
         libgles2-mesa-dev \
         libglib2.0-dev \
-        libgst-dev \
         libgstreamer-plugins-base1.0-dev \
         libgstreamer1.0-dev \
         libicu-dev \
@@ -45,13 +43,10 @@ RUN apt-get update && \
         libpng16-16 \
         libpq-dev \
         libpulse-dev \
-        libraspberrypi-bin \
-        libraspberrypi0 \
         librsvg2-common \
         libsnappy-dev \
         libsqlite0-dev \
         libsqlite3-dev \
-        libsrtp0-dev \
         libsrtp2-dev \
         libssl-dev \
         libssl1.1 \
