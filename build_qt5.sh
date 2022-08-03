@@ -134,6 +134,10 @@ function build_qt () {
                 "-device" "linux-rasp-pi4-v3d-g++"
                 "-opengl" "es2"
             )
+        elif [ "$1" = "generic" ]; then
+            local BUILD_ARGS=(
+                "-device" "linux-arm-generic-g++"
+            )
         else
             echo "Unknown device. Exiting."
             exit 1
